@@ -178,7 +178,7 @@ print(f"\n── GENERANDO GRÁFICAS ──────────────�
 fig, axes = plt.subplots(1, 2, figsize=(13, 5))
 fig.suptitle(
     f"Análisis de Sensibilidad — {NOMBRE}\n"
-    f"Max Z = {' + '.join(f'${c:.0f}·{n}' for c,n in zip(C_OBJ,NOMBRE_X))}",
+    f"Max Z = {' + '.join(f'${c:.3f}·{n}' for c,n in zip(C_OBJ,NOMBRE_X))}",
     fontsize=12, fontweight="bold", color="#1F3864"
 )
 
@@ -187,9 +187,9 @@ ax1 = axes[0]
 ax1.set_facecolor("#F7F9FC")
 ax1.plot(b_list, z_rhs, color="#1F3864", lw=2.5, marker="o", ms=6)
 ax1.axvline(b_base, color="#C9A227", lw=2.2, ls="--",
-            label=f"{NOMBRE_R[IDX_RHS]}  actual={b_base:.0f}")
+            label=f"{NOMBRE_R[IDX_RHS]}  actual={b_base:.3f}")
 ax1.axhline(z_opt, color="#1E7145", lw=1.5, ls=":",
-            label=f"Z* base = ${z_opt:,.0f}")
+            label=f"Z* base = ${z_opt:,.3f}")
 ax1.set_xlabel(NOMBRE_R[IDX_RHS], fontsize=11, color="#1F3864")
 ax1.set_ylabel("Z* ($)",           fontsize=11, color="#1F3864")
 ax1.set_title(f"Z* vs {NOMBRE_R[IDX_RHS]}",
