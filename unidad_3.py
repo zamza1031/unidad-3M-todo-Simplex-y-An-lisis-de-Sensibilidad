@@ -13,13 +13,7 @@ from scipy.optimize import linprog
 import numpy as np
 import matplotlib.pyplot as plt
 
-# =============================================================================
-# ╔══════════════════════════════════════════════════════════════════════╗
-# ║  CONFIGURA TU PROBLEMA AQUÍ  (edita SOLO esta sección)              ║
-# ╠══════════════════════════════════════════════════════════════════════╣
-# ║  Ejemplo pre-cargado: Fábrica de Mesas y Sillas (datos del curso)   ║
-# ║  Para tu problema: reemplaza los valores marcados con ←             ║
-# ╚══════════════════════════════════════════════════════════════════════╝
+
 
 # Nombre de tu empresa o problema
 NOMBRE = "Mollejitas_e_Hígado_pio_pio"          
