@@ -28,7 +28,7 @@ SEP2 = "─" * 65
 
 print(SEP)
 print("  UNIDAD III  |  Método Simplex con PuLP")
-print("  Emprendimiento: El Buen Sabor (Mollejitas e Hígado)")
+print("  Emprendimiento: Mollejitas e Hígado")
 print(SEP)
 
 # ─────────────────────────────────────────────────────────────────────────────

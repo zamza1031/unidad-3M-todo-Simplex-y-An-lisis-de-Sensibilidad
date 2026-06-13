@@ -3,7 +3,7 @@
 # Script 2: Simplex Manual — Tablas paso a paso
 # =============================================================================
 #
-# PROBLEMA ADAPTADO: Mollejitas e Hígado
+# PROBLEMA ADAPTADO:Mollejitas e Hígado
 #   Max Z = 0.515x₁ + 0.575x₂
 #   s.a.   0.275x₁ + 0.215x₂ ≤ 30      (Presupuesto)
 #            100x₁ +   200x₂ ≤ 10000   (Aceite)
@@ -63,15 +63,12 @@ BASE_INI  = ["s₁", "s₂", "s₃", "s₄"]
 # ─────────────────────────────────────────────────────────────────────────────
 
 def fmt(v):
-    """Formatea un número: enteros limpios, fracciones simples o decimal."""
+    """Formatea un número para el tableau. Usa decimales a 4 posiciones."""
     if abs(v) < 1e-9:
         return "0"
     if abs(v - round(v)) < 1e-6:
         return str(int(round(v)))
-    f = Fraction(v).limit_denominator(12)
-    if abs(float(f) - v) < 1e-5:
-        return str(f)
-    return f"{v:.3f}"
+    return f"{v:.4f}"
 
 def build_tableau():
     """Construye el tableau inicial [A | I | b] con fila Z negada."""
@@ -84,7 +81,7 @@ def build_tableau():
     return T
 
 def print_tableau(T, base, it):
-    """Imprime el tableau con bordes, fracciones y columna de razones."""
+    """Imprime el tableau con bordes y columna de razones."""
     W = 10
     linea = "─" * (W * (len(COL_NAMES) + 1) + 4)
     titulo = f"Tableau — Iteración {it}"
@@ -150,12 +147,14 @@ def pivotar(T, fil, col):
 # ─────────────────────────────────────────────────────────────────────────────
 # EJECUCIÓN DEL ALGORITMO
 # ─────────────────────────────────────────────────────────────────────────────
-print("\n  Problema: Max Z = 50x₁ + 30x₂")
+print("\n  Problema: Max Z = 0.515x₁ + 0.575x₂")
 print("  Forma estándar:")
-print("    4x₁ + 2x₂ + s₁       = 240   (Carpintería)")
-print("    2x₁ + 3x₂       + s₂ = 180   (Pintura)")
-print("    Z − 50x₁ − 30x₂      =   0")
-print("\n  Variables básicas iniciales: s₁=240, s₂=180  (x₁=x₂=0, Z=0)")
+print("    0.275x₁ + 0.215x₂ + s₁                = 30     (Presupuesto)")
+print("      100x₁ +   200x₂      + s₂           = 10000  (Aceite)")
+print("         x₁                     + s₃      = 45     (Lím. Mollejitas)")
+print("                   x₂                + s₄ = 60     (Lím. Hígado)")
+print("    Z − 0.515x₁ − 0.575x₂                 = 0")
+print("\n  Variables básicas iniciales: s₁=30, s₂=10000, s₃=45, s₄=60")
 
 T    = build_tableau()
 base = BASE_INI.copy()
@@ -207,31 +206,35 @@ for i, vb in enumerate(base):
     sol[vb] = T[i, -1]
 
 print(f"  {'Variable':<8}  {'Valor':>10}  Descripción")
-print(f"  {'─'*50}")
+print(f"  {'─'*60}")
 for v in COL_NAMES[:-1]:
     desc  = VAR_DESC.get(v, "")
     marca = " ★ básica" if sol[v] > 1e-6 else ""
     print(f"  {v:<8}  {sol[v]:>10.4f}  {desc}{marca}")
 
-print(f"\n  Z* = ${T[-1,-1]:,.2f}  (utilidad máxima semanal)")
+print(f"\n  Z* = ${T[-1,-1]:,.4f}  (Utilidad máxima diaria)")
 
 # Precios sombra desde la fila Z (columnas de holgura)
 print(f"\n  Precios sombra (coefs. de holguras en Z óptimo):")
+nombres_restricciones = ["Presupuesto", "Aceite", "Límite Mollejitas", "Límite Hígado"]
 for i, vn in enumerate(COL_NAMES[N_VARS:-1]):
     ps = T[-1, N_VARS + i]
-    nombre_r = ["Carpintería", "Pintura"][i]
-    print(f"  {vn} → {nombre_r}: PS = ${ps:.4f}/hora")
+    print(f"  {vn} → {nombres_restricciones[i]}: PS = ${ps:.6f}/unidad")
 
 # ─────────────────────────────────────────────────────────────────────────────
 # VERIFICACIÓN CON PULP
 # ─────────────────────────────────────────────────────────────────────────────
 print("\n── VERIFICACIÓN CON PULP ────────────────────────────────")
-p  = LpProblem("Verificacion", LpMaximize)
+p  = LpProblem("Verificacion_El_Buen_Sabor", LpMaximize)
 v1 = LpVariable("x1", lowBound=0)
 v2 = LpVariable("x2", lowBound=0)
-p += 50*v1 + 30*v2
-p += 4*v1 + 2*v2 <= 240, "Carp"
-p += 2*v1 + 3*v2 <= 180, "Pint"
+
+p += 0.515*v1 + 0.575*v2, "Z"
+p += 0.275*v1 + 0.215*v2 <= 30.0, "Presupuesto"
+p += 100.0*v1 + 200.0*v2 <= 10000.0, "Aceite"
+p += 1.0*v1 <= 45.0, "Lim_Mollejitas"
+p += 1.0*v2 <= 60.0, "Lim_Higado"
+
 p.solve(PULP_CBC_CMD(msg=0))
 
 z_manual = T[-1, -1]
@@ -243,6 +246,5 @@ print(f"  Z* PuLP    = ${z_pulp:,.4f}")
 print(f"  Diferencia = {gap:.2e}  {'✓  CORRECTO' if gap < 0.01 else '✗  Revisar'}")
 
 print(f"\n{SEP}")
-print("  Script 2 completado.")
-print("  Siguiente: U3_Script3_Analisis_Sensibilidad.py")
+
 print(SEP)
