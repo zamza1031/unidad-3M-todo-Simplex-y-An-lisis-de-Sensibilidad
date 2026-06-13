@@ -4,6 +4,19 @@
 #           Simplex + Análisis de Sensibilidad + Gráficas
 # =============================================================================
 #
+# INSTRUCCIONES PARA EL EQUIPO:
+#   1. Lee la sección "CONFIGURA TU PROBLEMA" y reemplaza los valores
+#      con los datos de tu problema real.
+#   2. Ejecuta: python U3_Script4_Plantilla_Actividad3.py
+#   3. Comprueba que la solución es correcta.
+#   4. Sube los PNG generados a tu presentación interactiva.
+#   5. Sube este archivo a GitHub o Google Colab y genera el QR con:
+#      https://qr-code-generator.com/
+#
+# El ejemplo pre-cargado usa los datos del curso (Fábrica de Muebles)
+# para que puedas verificar que tu instalación funciona antes de
+# adaptar el script a tu propio problema.
+#
 # INSTALACIÓN:  pip install pulp scipy matplotlib numpy
 # EJECUCIÓN:    python U3_Script4_Plantilla_Actividad3.py
 # =============================================================================
@@ -22,38 +35,36 @@ import matplotlib.pyplot as plt
 # ╚══════════════════════════════════════════════════════════════════════╝
 
 # Nombre de tu empresa o problema
-NOMBRE = "Mollejitas_e_Hígado_pio_pio"          # ← Cambia aquí
+NOMBRE = "Fabrica_Mesas_y_Sillas"          # ← Cambia aquí
 
 # Coeficientes de la función objetivo (utilidad por unidad)
-C_OBJ  = [0.515, 0.575]                      # ← [c₁, c₂]
+C_OBJ  = [50.0, 30.0]                      # ← [c₁, c₂]
 
 # Matriz de coeficientes de las restricciones
 A_UB   = [
-    [0.275, 0.215],  # R1: Presupuesto diario ($)
-    [100.0, 200.0],  # R2: Aceite vegetal (ml)
-    [1.0,   0.0],    # R3: Límite empaques Mollejitas
-    [0.0,   1.0],    # R4: Límite empaques Hígado
+    [4.0, 2.0],                             # ← Restricción 1
+    [2.0, 3.0],                             # ← Restricción 2
 ]
+
 # Lado derecho de cada restricción (RHS)
-B_UB   = [30.0, 10000.0, 45.0, 60.0]             
+B_UB   = [240.0, 180.0]                    # ← [b₁, b₂]
 
 # Nombres descriptivos (para tablas y gráficas)
-NOMBRE_R = ["Presupuesto ($)", 
-            "Aceite (ml)", 
-            "Lim. Mollejitas (u)", 
-            "Lim. Higado (u)"]
+NOMBRE_R = ["Carpintería (h/sem)",          # ← nombre restricción 1
+            "Pintura (h/sem)"]              # ← nombre restricción 2
 
-NOMBRE_X = ["Mollejitas",  "Hígado"]           
-UNIDAD_X = ["porciones",  "porciones"]             
+NOMBRE_X = ["Mesas",  "Sillas"]            # ← nombre variable 1 y 2
+UNIDAD_X = ["u/sem",  "u/sem"]             # ← unidad de medida
 
 # ── Configuración del análisis de sensibilidad ────────────────────────
-IDX_RHS    = 1                          
+# Índice de la restricción a analizar en el RHS (0 = R1, 1 = R2)
+IDX_RHS    = 0                             # ← 0 = analizar b₁
 
-# Rango de variación del RHS seleccionado (Aceite: +- 4000 ml en saltos de 1000)
-DELTA_RHS  = np.arange(-4000, 4001, 1000)
+# Rango de variación del RHS seleccionado
+DELTA_RHS  = np.arange(-120, 181, 20)      # ← ajusta según tu problema
 
-# Rango de variación de c₁ (Utilidad Mollejitas: de $0.10 a $1.00 en saltos de $0.05)
-C1_RANGO   = np.arange(0.10, 1.01, 0.05)
+# Rango de variación de c₁ para la sensibilidad de coeficientes
+C1_RANGO   = np.arange(5, 155, 5)          # ← ajusta según tu problema
 
 # =============================================================================
 # A PARTIR DE AQUÍ EL SCRIPT ES AUTOMÁTICO
