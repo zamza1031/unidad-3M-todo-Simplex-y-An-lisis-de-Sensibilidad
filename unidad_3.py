@@ -22,10 +22,10 @@ import matplotlib.pyplot as plt
 # ╚══════════════════════════════════════════════════════════════════════╝
 
 # Nombre de tu empresa o problema
-NOMBRE = "Mollejitas_e_Hígado_pio_pio"          # ← Cambia aquí
+NOMBRE = "Mollejitas_e_Hígado_pio_pio"          
 
 # Coeficientes de la función objetivo (utilidad por unidad)
-C_OBJ  = [0.515, 0.575]                      # ← [c₁, c₂]
+C_OBJ  = [0.515, 0.575]                      
 
 # Matriz de coeficientes de las restricciones
 A_UB   = [
